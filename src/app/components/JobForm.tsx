@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Job } from "@/components/types";
 
@@ -18,7 +19,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
       title: jobTitle,
       company: companyName,
       status: status,
-      notes: "", // Optional notes field
+      notes: "",
     };
 
     console.log("Submitting job:", newJob);
@@ -36,7 +37,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
       console.log("Response data:", responseData);
 
       if (response.ok) {
-        addJob(responseData); // Update the UI with the saved job
+        addJob(responseData);
         setJobTitle("");
         setCompanyName("");
         setStatus("Applied");
@@ -49,33 +50,47 @@ const JobForm = ({ addJob }: JobFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="jobTitle">Job Title</label>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-6 bg-white p-6 rounded-md max-w-2xl"
+    >
+      <div className="flex flex-col">
+        <label htmlFor="jobTitle" className="text-sm font-medium mb-2">
+          Job Title
+        </label>
         <input
           type="text"
           id="jobTitle"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
           required
+          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="companyName">Company</label>
+
+      <div className="flex flex-col">
+        <label htmlFor="companyName" className="text-sm font-medium mb-2">
+          Company
+        </label>
         <input
           type="text"
           id="companyName"
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
           required
+          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="status">Status</label>
+
+      <div className="flex flex-col">
+        <label htmlFor="status" className="text-sm font-medium mb-2">
+          Status
+        </label>
         <select
           id="status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
+          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="Applied">Applied</option>
           <option value="Interviewing">Interviewing</option>
@@ -83,7 +98,13 @@ const JobForm = ({ addJob }: JobFormProps) => {
           <option value="Offer">Offer</option>
         </select>
       </div>
-      <button type="submit">Add Job</button>
+
+      <button
+        type="submit"
+        className="bg-blue-600 text-white rounded-md py-2 px-4 hover:bg-blue-700 transition-colors"
+      >
+        Add Job
+      </button>
     </form>
   );
 };

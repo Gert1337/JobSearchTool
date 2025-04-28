@@ -41,9 +41,25 @@ export default function Home() {
     setJobs(updatedJobs);
   };
 
-  const deleteJob = (id: string) => {
-    const updatedJobs = jobs.filter((job) => job._id !== id);
-    setJobs(updatedJobs);
+  const deleteJob = async (id: string) => {
+    try {
+      const response = await fetch("/api/jobs", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        setJobs((prevJobs) => prevJobs.filter((job) => job._id !== id));
+        console.log("Job deleted successfully");
+      } else {
+        console.error("Failed to delete job:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
   };
 
   return (

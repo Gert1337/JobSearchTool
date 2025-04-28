@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import clientPromise from './mongodb';
 
 export interface Job {
@@ -37,4 +38,13 @@ export async function listJobs(): Promise<Job[]> {
 
   const jobs = await collection.find().sort({ createdAt: -1 }).toArray();
   return jobs;
+}
+
+export async function deleteJob(id: string) {
+	const client = await clientPromise;
+	const db = client.db();
+	const collection = db.collection("jobs");
+
+	const result = await collection.deleteOne({ _id: new ObjectId(id) });
+	return result;
 }

@@ -1,4 +1,4 @@
-import { createJob, listJobs } from "@/lib/jobs"
+import { createJob, listJobs, deleteJob } from "@/lib/jobs"
 
 export async function POST(req: Request) {
 	const data = await req.json();
@@ -20,4 +20,24 @@ export async function GET() {
 	return new Response(JSON.stringify(jobs), {
 		status: 200,
 	});
+}
+
+export async function DELETE(req: Request) {
+	const { id } = await req.json();
+
+	if (!id) {
+		return new Response(JSON.stringify({ error: "Missing ID" }), {
+			status: 400,
+		});
+	}
+
+	try {
+		await deleteJob(id);
+		return new Response(null, { status: 204 }); // 204 No Content
+	} catch (error) {
+		console.error("Failed to delete job:", error); 
+		return new Response(JSON.stringify({ error: "Failed to delete job" }), {
+			status: 500,
+		});
+	}
 }
