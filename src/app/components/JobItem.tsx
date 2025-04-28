@@ -1,5 +1,6 @@
 "use client";
 import { Job } from "@/components/types";
+import Link from "next/link";
 
 interface JobItemProps {
   job: Job;
@@ -25,7 +26,9 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   return (
     <div className="p4">
       <h3>
-        {title} at {company}
+        {title} at <Link href={`/companies/${company}`} className="text-blue-500 underline">
+					{company}
+				</Link>
       </h3>
       <p>Status: {status}</p>
       <p>Date applied: {formattedDate ? formattedDate : "No date"}</p>
