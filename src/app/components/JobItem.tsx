@@ -8,15 +8,19 @@ interface JobItemProps {
 }
 
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
-  const { title, company, status, _id } = job;
+  const { title, company, status, _id, dateApplied } = job;
 
   if (!_id) {
-    return null; 
+    return null;
   }
 
   const idString = typeof _id === "string" ? _id : _id.toString();
 
   console.log("Job in JobItem:", job);
+  const formattedDate =
+    dateApplied instanceof Date
+      ? dateApplied.toLocaleDateString()
+      : dateApplied;
 
   return (
     <div>
@@ -24,6 +28,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
         {title} at {company}
       </h3>
       <p>Status: {status}</p>
+      <p>Date applied: {formattedDate? formattedDate:"No date"}</p>
       <button onClick={() => updateJob(idString)}>Update Status</button>
       <button onClick={() => deleteJob(idString)}>Delete</button>
     </div>

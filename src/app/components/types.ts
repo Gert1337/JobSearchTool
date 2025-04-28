@@ -7,4 +7,5 @@ export interface Job {
 	status: "applied" | "interviewing" | "offer" | "rejected";
 	notes?: string;
 	createdAt: Date;
+  dateApplied: Date; 
 }

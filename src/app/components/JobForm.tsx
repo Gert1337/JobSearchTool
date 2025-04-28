@@ -13,6 +13,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
   const [status, setStatus] = useState<
     "applied" | "interviewing" | "offer" | "rejected"
   >("applied");
+  const [dateApplied, setDateApplied] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
       title: jobTitle,
       company: companyName,
       status: status,
+      dateApplied: dateApplied,
       notes: "",
     };
 
@@ -107,6 +109,20 @@ const JobForm = ({ addJob }: JobFormProps) => {
           <option value="rejected">Rejected</option>
           <option value="offer">Offer</option>
         </select>
+      </div>
+
+      <div className="flex flex-col">
+        <label htmlFor="dateApplied" className="text-sm font-medium mb-2">
+          Date Applied
+        </label>
+        <input
+          type="date"
+          id="dateApplied"
+          value={dateApplied}
+          onChange={(e) => setDateApplied(e.target.value)}
+          required
+          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
 
       <button

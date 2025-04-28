@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     company: data.company,
     status: data.status,
     notes: data.notes,
+	dateApplied: data.dateApplied
   });
 
   return new Response(JSON.stringify(newJob), {
