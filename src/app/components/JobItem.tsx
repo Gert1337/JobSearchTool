@@ -9,7 +9,14 @@ interface JobItemProps {
 
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id } = job;
-  console.log("Job in Job:", job);
+
+  if (!_id) {
+    return null; 
+  }
+
+  const idString = typeof _id === "string" ? _id : _id.toString();
+
+  console.log("Job in JobItem:", job);
 
   return (
     <div>
@@ -17,8 +24,8 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
         {title} at {company}
       </h3>
       <p>Status: {status}</p>
-      <button onClick={() => updateJob(_id)}>Update Status</button>
-      <button onClick={() => deleteJob(_id)}>Delete</button>
+      <button onClick={() => updateJob(idString)}>Update Status</button>
+      <button onClick={() => deleteJob(idString)}>Delete</button>
     </div>
   );
 };

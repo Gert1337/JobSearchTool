@@ -1,14 +1,7 @@
 import { ObjectId } from 'mongodb';
 import clientPromise from './mongodb';
 
-export interface Job {
-  _id?: string; // MongoDB's generated ID will be added
-  title: string;
-  company: string;
-  status: 'applied' | 'interviewing' | 'offer' | 'rejected';
-  notes?: string;
-  createdAt: Date;
-}
+import {Job} from '@/components/types'
 
 // Create a new job
 export async function createJob(job: Omit<Job, 'createdAt'>): Promise<Job> {
@@ -37,14 +30,31 @@ export async function listJobs(): Promise<Job[]> {
   const collection = db.collection<Job>('jobs');
 
   const jobs = await collection.find().sort({ createdAt: -1 }).toArray();
-  return jobs;
+
+  // Convert _id to string before returning
+  const serializedJobs = jobs.map(job => ({
+    ...job,
+    _id: job._id.toString()  // Convert ObjectId to string
+  }));
+
+  return serializedJobs;
 }
 
 export async function deleteJob(id: string) {
 	const client = await clientPromise;
 	const db = client.db();
-	const collection = db.collection("jobs");
+	const collection = db.collection<Job>('jobs');
+
+	// Ensure the id is a valid ObjectId string
+	if (!ObjectId.isValid(id)) {
+		throw new Error("Invalid ID format");
+	}
 
 	const result = await collection.deleteOne({ _id: new ObjectId(id) });
-	return result;
+
+	if (result.deletedCount === 0) {
+		throw new Error("Job not found");
+	}
+
+	return true;
 }

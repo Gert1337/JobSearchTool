@@ -10,7 +10,9 @@ interface JobFormProps {
 const JobForm = ({ addJob }: JobFormProps) => {
   const [jobTitle, setJobTitle] = useState<string>("");
   const [companyName, setCompanyName] = useState<string>("");
-  const [status, setStatus] = useState<string>("Applied");
+  const [status, setStatus] = useState<
+    "applied" | "interviewing" | "offer" | "rejected"
+  >("applied");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
         addJob(responseData);
         setJobTitle("");
         setCompanyName("");
-        setStatus("Applied");
+        setStatus("applied");
       } else {
         console.error("Error saving job:", response.statusText);
       }
@@ -89,13 +91,21 @@ const JobForm = ({ addJob }: JobFormProps) => {
         <select
           id="status"
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={(e) =>
+            setStatus(
+              e.target.value as
+                | "applied"
+                | "interviewing"
+                | "offer"
+                | "rejected"
+            )
+          }
           className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="Applied">Applied</option>
-          <option value="Interviewing">Interviewing</option>
-          <option value="Rejected">Rejected</option>
-          <option value="Offer">Offer</option>
+          <option value="applied">Applied</option>
+          <option value="interviewing">Interviewing</option>
+          <option value="rejected">Rejected</option>
+          <option value="offer">Offer</option>
         </select>
       </div>
 

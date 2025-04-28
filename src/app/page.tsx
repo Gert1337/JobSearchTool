@@ -13,7 +13,16 @@ export default function Home() {
         if (response.ok) {
           const data = await response.json();
           console.log("Fetched jobs:", data);
-          setJobs(data); // Set jobs from database
+          // Ensure that the 'status' is one of the valid options.
+          const validJobs: Job[] = data.map((job: Job) => ({
+            ...job,
+            status: job.status as
+              | "applied"
+              | "interviewing"
+              | "offer"
+              | "rejected",
+          }));
+          setJobs(validJobs); // Set jobs from database
         } else {
           console.error("Failed to fetch jobs:", response.statusText);
         }
@@ -36,7 +45,16 @@ export default function Home() {
 
   const updateJob = (id: string) => {
     const updatedJobs = jobs.map((job) =>
-      job._id === id ? { ...job, status: "Offer" } : job
+      job._id === id
+        ? {
+            ...job,
+            status: "offer" as
+              | "applied"
+              | "interviewing"
+              | "offer"
+              | "rejected",
+          }
+        : job
     );
     setJobs(updatedJobs);
   };
