@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import JobForm from "@/components/JobForm";
 import JobList from "@/components/JobList";
 import { Job } from "@/components/types";
+import CompanyForm from "./components/CompanyForm";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]); // Fetch companies here
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -31,7 +33,16 @@ export default function Home() {
       }
     }
 
+     // Fetch companies
+     async function fetchCompanies() {
+      const res = await fetch("/api/companies");
+      const data = await res.json();
+      setCompanies(data);
+    }
+
     fetchJobs(); // Call it immediately
+    fetchCompanies();
+
   }, []);
 
   const addJob = (newJob: Job) => {
@@ -80,12 +91,17 @@ export default function Home() {
     }
   };
 
+  const addCompany = (company: any) => {
+    setCompanies((prevCompanies) => [...prevCompanies, company]);
+  };
+
   return (
     <div className="p-4">
       <main className="">
         <div>
           <h1>Job Search Tool</h1>
-          <JobForm addJob={addJob} />
+          <CompanyForm addCompany={addCompany}/>
+          <JobForm addJob={addJob} companies={companies} />
           <JobList jobs={jobs} updateJob={updateJob} deleteJob={deleteJob} />
         </div>
       </main>

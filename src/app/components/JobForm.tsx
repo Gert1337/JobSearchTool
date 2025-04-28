@@ -3,6 +3,7 @@ import { Job, Note } from "@/components/types";
 
 interface JobFormProps {
   addJob: (job: Job) => void;
+  companies: { _id: string; name: string }[];
 }
 
 const moodEmojis = [
@@ -14,9 +15,9 @@ const moodEmojis = [
   { label: "Surprised", emoji: "😲" },
 ];
 
-const JobForm = ({ addJob }: JobFormProps) => {
+const JobForm = ({ addJob, companies }: JobFormProps) => {
   const [jobTitle, setJobTitle] = useState<string>("");
-  const [companyName, setCompanyName] = useState<string>("");
+  const [companyId, setCompanyId] = useState<string>("");
   const [status, setStatus] = useState<
     "applied" | "interviewing" | "offer" | "rejected"
   >("applied");
@@ -57,7 +58,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
 
     const newJob = {
       title: jobTitle,
-      company: companyName,
+      companyId,
       status: status,
       dateApplied: dateApplied,
       notes: notes,
@@ -80,7 +81,7 @@ const JobForm = ({ addJob }: JobFormProps) => {
       if (response.ok) {
         addJob(responseData);
         setJobTitle("");
-        setCompanyName("");
+        setCompanyId("");
         setStatus("applied");
         setNotes([
           {
@@ -118,17 +119,23 @@ const JobForm = ({ addJob }: JobFormProps) => {
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="companyName" className="text-sm font-medium mb-2">
+        <label htmlFor="companyId" className="text-sm font-medium mb-2">
           Company
         </label>
-        <input
-          type="text"
-          id="companyName"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
+        <select
+          id="companyId"
+          value={companyId}
+          onChange={(e) => setCompanyId(e.target.value)}
           required
-          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          className="border border-gray-300 rounded-md p-2"
+        >
+          <option value="">Select a Company</option>
+          {companies.map((company) => (
+            <option key={company._id} value={company._id}>
+              {company.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="flex flex-col">

@@ -23,18 +23,33 @@ export async function createJob(job: Omit<Job, 'createdAt'>): Promise<Job> {
   return createdJob; // Return the full job object, including _id
 }
 
-// List all jobs
+// List all jobs with populated company details
 export async function listJobs(): Promise<Job[]> {
   const client = await clientPromise;
   const db = client.db();
   const collection = db.collection<Job>('jobs');
 
-  const jobs = await collection.find().sort({ createdAt: -1 }).toArray();
+  const jobs = await collection.aggregate([
+    {
+      $lookup: {
+        from: 'companies', // The companies collection
+        localField: 'companyId',
+        foreignField: '_id',
+        as: 'company', // Field name for joined company data
+      },
+    },
+    { $unwind: '$company' }, // Flatten the result to include only the first company
+    { $sort: { createdAt: -1 } }, // Sort by createdAt (latest job first)
+  ]).toArray();
 
-  // Convert _id to string before returning
-  const serializedJobs = jobs.map(job => ({
-    ...job,
-    _id: job._id.toString()  // Convert ObjectId to string
+  // Convert _id to string and return jobs with company details
+  const serializedJobs = jobs.map((job) => ({
+    _id: job._id.toString(), // Convert ObjectId to string
+    title: job.title,         // Make sure all fields required by Job are included
+    status: job.status,
+    createdAt: job.createdAt.toString(), // Convert Date to string
+    dateApplied: job.dateApplied.toString(), // Convert Date to string
+    company: job.company.name, // Assuming you only want to show the company name, adjust accordingly
   }));
 
   return serializedJobs;
