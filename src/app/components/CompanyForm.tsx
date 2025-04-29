@@ -97,55 +97,66 @@ export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-6 bg-white p-6 rounded-md max-w-2xl"
+    >
       <input
         name="name"
         value={formData.name}
         onChange={handleChange}
         placeholder="Company Name"
         required
+        className="border p-2 rounded"
       />
       <textarea
         name="mission"
         value={formData.mission}
         onChange={handleChange}
         placeholder="Mission"
+        className="border p-2 rounded"
       />
       <textarea
         name="vision"
         value={formData.vision}
         onChange={handleChange}
         placeholder="Vision"
+        className="border p-2 rounded"
       />
       <input
         name="values"
         value={formData.values.join(", ")}
         onChange={handleChange}
         placeholder="Values (comma separated)"
+        className="border p-2 rounded"
       />
       <input
         name="contactDetails.phone"
         value={formData.contactDetails.phone}
         onChange={handleChange}
         placeholder="Phone"
+        className="border p-2 rounded"
       />
       <input
         name="contactDetails.email"
         value={formData.contactDetails.email}
         onChange={handleChange}
         placeholder="Email"
+        className="border p-2 rounded"
       />
       <input
         name="contactDetails.address"
         value={formData.contactDetails.address}
         onChange={handleChange}
         placeholder="Address"
+        className="border p-2 rounded"
       />
       <textarea
         name="whyWorkHere"
         value={formData.whyWorkHere}
         onChange={handleChange}
         placeholder="Why Work Here?"
+        className="border p-2 rounded"
       />
       <input
         type="number"
@@ -156,14 +167,21 @@ export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
         min={0}
         max={5}
         step="0.1"
+        className="border p-2 rounded"
       />
       <input
         name="jobPositions"
         value={formData.jobPositions.join(", ")}
         onChange={handleChange}
         placeholder="Related Job IDs (comma separated)"
+        className="border p-2 rounded"
       />
-      <button type="submit">Add Company</button>
+      <button
+        type="submit"
+        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+      >
+        Add Company
+      </button>
     </form>
   );
 };

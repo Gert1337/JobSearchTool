@@ -15,3 +15,20 @@ export interface Job {
 	createdAt: Date;
   dateApplied: Date; 
 }
+
+export interface Company {
+	_id?: ObjectId | string; 
+	name: string;
+	mission: string;
+	vision: string;
+	values: string[];
+	slug?: string
+	contactDetails: {
+	  phone: string;
+	  email: string;
+	  address: string;
+	};
+	whyWorkHere: string;
+	rating: number;
+	jobPositions: string[]; // Array of Job IDs related to this company
+  }

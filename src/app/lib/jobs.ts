@@ -34,17 +34,9 @@ export async function listJobs(): Promise<Job[]> {
 
   console.log("LOOOOKHERE",jobs)
 
-  // Convert _id to string and return jobs with company details
-  const serializedJobs = jobs.map((job) => ({
-    _id: job._id.toString(), // Convert ObjectId to string
-    title: job.title,         // Make sure all fields required by Job are included
-    status: job.status,
-    createdAt: job.createdAt.toString(), // Convert Date to string
-    dateApplied: job.dateApplied.toString(), // Convert Date to string
-    company: job.company // Assuming you only want to show the company name, adjust accordingly
-  }));
 
-  return serializedJobs;
+
+  return jobs;
 }
 
 export async function deleteJob(id: string) {

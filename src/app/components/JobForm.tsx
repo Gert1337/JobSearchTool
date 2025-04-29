@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Job, Note } from "@/components/types";
+import { Job, Note, Company } from "@/components/types";
 
 interface JobFormProps {
   addJob: (job: Job) => void;
-  companies: { _id: string; name: string }[];
+  companies: Company[];
 }
 
 const moodEmojis = [
@@ -131,7 +131,10 @@ const JobForm = ({ addJob, companies }: JobFormProps) => {
         >
           <option value="">Select a Company</option>
           {companies.map((company) => (
-            <option key={company._id} value={company._id}>
+            <option
+              key={company._id?.toString()}
+              value={company._id?.toString()}
+            >
               {company.name}
             </option>
           ))}

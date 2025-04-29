@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 import JobForm from "@/components/JobForm";
 import JobList from "@/components/JobList";
-import { Job } from "@/components/types";
+import { Job, Company } from "@/components/types";
 import CompanyForm from "./components/CompanyForm";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [companies, setCompanies] = useState<any[]>([]); // Fetch companies here
+  const [companies, setCompanies] = useState<Company[]>([]); // Fetch companies here
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -33,8 +33,8 @@ export default function Home() {
       }
     }
 
-     // Fetch companies
-     async function fetchCompanies() {
+    // Fetch companies
+    async function fetchCompanies() {
       const res = await fetch("/api/companies");
       const data = await res.json();
       setCompanies(data);
@@ -42,7 +42,6 @@ export default function Home() {
 
     fetchJobs(); // Call it immediately
     fetchCompanies();
-
   }, []);
 
   const addJob = (newJob: Job) => {
@@ -91,7 +90,7 @@ export default function Home() {
     }
   };
 
-  const addCompany = (company: any) => {
+  const addCompany = (company: Company) => {
     setCompanies((prevCompanies) => [...prevCompanies, company]);
   };
 
@@ -100,8 +99,10 @@ export default function Home() {
       <main className="">
         <div>
           <h1>Job Search Tool</h1>
-          <CompanyForm addCompany={addCompany}/>
-          <JobForm addJob={addJob} companies={companies} />
+          <div className="inline-flex">
+            <CompanyForm addCompany={addCompany} />
+            <JobForm addJob={addJob} companies={companies} />
+          </div>
           <JobList jobs={jobs} updateJob={updateJob} deleteJob={deleteJob} />
         </div>
       </main>

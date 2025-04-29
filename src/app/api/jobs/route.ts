@@ -6,7 +6,7 @@ export async function POST(req: Request) {
 
   const newJob = await createJob({
     title: data.title,
-    company: data.company,
+    company: data.companyId,
     status: data.status,
     notes: data.notes,
 	dateApplied: data.dateApplied
