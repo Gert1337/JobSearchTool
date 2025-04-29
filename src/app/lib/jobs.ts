@@ -3,6 +3,7 @@ import clientPromise from './mongodb';
 
 import {Job} from '@/components/types'
 
+
 // Create a new job
 export async function createJob(job: Omit<Job, 'createdAt'>): Promise<Job> {
   const client = await clientPromise;
@@ -29,18 +30,9 @@ export async function listJobs(): Promise<Job[]> {
   const db = client.db();
   const collection = db.collection<Job>('jobs');
 
-  const jobs = await collection.aggregate([
-    {
-      $lookup: {
-        from: 'companies', // The companies collection
-        localField: 'companyId',
-        foreignField: '_id',
-        as: 'company', // Field name for joined company data
-      },
-    },
-    { $unwind: '$company' }, // Flatten the result to include only the first company
-    { $sort: { createdAt: -1 } }, // Sort by createdAt (latest job first)
-  ]).toArray();
+  const jobs = await collection.find().toArray();
+
+  console.log("LOOOOKHERE",jobs)
 
   // Convert _id to string and return jobs with company details
   const serializedJobs = jobs.map((job) => ({
@@ -49,7 +41,7 @@ export async function listJobs(): Promise<Job[]> {
     status: job.status,
     createdAt: job.createdAt.toString(), // Convert Date to string
     dateApplied: job.dateApplied.toString(), // Convert Date to string
-    company: job.company.name, // Assuming you only want to show the company name, adjust accordingly
+    company: job.company // Assuming you only want to show the company name, adjust accordingly
   }));
 
   return serializedJobs;
