@@ -1,22 +1,8 @@
 import { useState } from "react";
+import { Company } from "./types";
 
 interface CompanyFormProps {
   addCompany: (company: Company) => void;
-}
-
-interface Company {
-  name: string;
-  mission: string;
-  vision: string;
-  values: string[];
-  contactDetails: {
-    phone: string;
-    email: string;
-    address: string;
-  };
-  whyWorkHere: string;
-  rating: number;
-  jobPositions: string[];
 }
 
 export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
