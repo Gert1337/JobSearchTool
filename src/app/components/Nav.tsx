@@ -16,6 +16,11 @@ function Nav() {
                 Companies
             </Link>
         </li>
+        <li>
+            <Link href="/addjob" className="text-gray-700 hover:text-black">
+                Add a new job
+            </Link>
+        </li>
     </ul>
 </nav>
     </div>
