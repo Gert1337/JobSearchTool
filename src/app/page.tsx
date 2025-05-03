@@ -94,6 +94,14 @@ export default function Home() {
     setCompanies((prevCompanies) => [...prevCompanies, company]);
   };
 
+  const jobsWithCompanyName = jobs.map((job) => {
+    const company = companies.find((c) => c._id === job.company); 
+    return {
+      ...job,
+      company: company ? company.name : "Unknown company",
+    };
+  });
+
   return (
     <div className="p-4">
       <main className="">
@@ -103,7 +111,11 @@ export default function Home() {
             <CompanyForm addCompany={addCompany} />
             <JobForm addJob={addJob} companies={companies} />
           </div>
-          <JobList jobs={jobs} updateJob={updateJob} deleteJob={deleteJob} />
+          <JobList
+            jobs={jobsWithCompanyName}
+            updateJob={updateJob}
+            deleteJob={deleteJob}
+          />
         </div>
       </main>
     </div>
