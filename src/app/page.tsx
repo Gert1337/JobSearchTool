@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import JobForm from "@/components/JobForm";
 import JobList from "@/components/JobList";
 import { Job, Company } from "@/components/types";
-import CompanyForm from "./components/CompanyForm";
+import AddJobModal from "./components/AddJobModal";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]); // Fetch companies here
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -43,15 +43,6 @@ export default function Home() {
     fetchJobs(); // Call it immediately
     fetchCompanies();
   }, []);
-
-  const addJob = (newJob: Job) => {
-    setJobs((prevJobs) => {
-      console.log("Previous jobs:", prevJobs); // Log the previous jobs state
-      const updatedJobs = [...prevJobs, newJob];
-      console.log("Updated jobs:", updatedJobs); // Log the updated jobs state
-      return updatedJobs;
-    });
-  };
 
   const updateJob = (id: string) => {
     const updatedJobs = jobs.map((job) =>
@@ -90,12 +81,8 @@ export default function Home() {
     }
   };
 
-  const addCompany = (company: Company) => {
-    setCompanies((prevCompanies) => [...prevCompanies, company]);
-  };
-
   const jobsWithCompanyName = jobs.map((job) => {
-    const company = companies.find((c) => c._id === job.company); 
+    const company = companies.find((c) => c._id === job.company);
     return {
       ...job,
       company: company ? company.name : "Unknown company",
@@ -108,14 +95,19 @@ export default function Home() {
         <div>
           <h1>Job Search Tool</h1>
           <div className="inline-flex">
-            <CompanyForm addCompany={addCompany} />
-            <JobForm addJob={addJob} companies={companies} />
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              Add job
+            </button>
           </div>
           <JobList
             jobs={jobsWithCompanyName}
             updateJob={updateJob}
             deleteJob={deleteJob}
           />
+          <AddJobModal isOpen={showModal} onClose={() => setShowModal(false)} />
         </div>
       </main>
     </div>
