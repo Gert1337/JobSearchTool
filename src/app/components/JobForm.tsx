@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Job, Note, Company } from "@/components/types";
 
@@ -102,7 +103,7 @@ const JobForm = ({ addJob, companies }: JobFormProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-6 bg-white p-6 rounded-md max-w-2xl"
+      className="flex flex-col gap-6 bg-white p-6 rounded-md "
     >
       <div className="flex flex-col">
         <label htmlFor="jobTitle" className="text-sm font-medium mb-2">
