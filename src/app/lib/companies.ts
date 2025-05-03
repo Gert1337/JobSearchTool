@@ -1,22 +1,8 @@
 import { ObjectId } from 'mongodb';
 import clientPromise from './mongodb';
+import { Company } from '@/components/types';
 
-export interface Company {
-  _id?: ObjectId | string; 
-  name: string;
-  mission: string;
-  vision: string;
-  values: string[];
-  slug: string
-  contactDetails: {
-    phone: string;
-    email: string;
-    address: string;
-  };
-  whyWorkHere: string;
-  rating: number;
-  jobPositions: string[]; // Array of Job IDs related to this company
-}
+
 type CompanyWithStringId = Omit<Company, '_id'> & { _id: string };
 
 function generateSlug(name: string) {
