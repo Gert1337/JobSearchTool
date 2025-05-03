@@ -101,14 +101,19 @@ export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
       onSubmit={handleSubmit}
       className="flex flex-col gap-6 bg-white p-6 rounded-md max-w-2xl"
     >
-      <input
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        placeholder="Company Name"
-        required
-        className="border p-2 rounded"
-      />
+      <div className="flex flex-col">
+        <label htmlFor={formData.name} className="text-sm font-medium mb-2">
+          Company Name
+        </label>
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Company Name"
+          required
+          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
       <textarea
         name="mission"
         value={formData.mission}
