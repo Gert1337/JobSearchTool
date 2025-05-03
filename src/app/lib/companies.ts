@@ -1,6 +1,8 @@
+import { ObjectId } from 'mongodb';
 import clientPromise from './mongodb';
 
 export interface Company {
+  _id?: ObjectId | string; 
   name: string;
   mission: string;
   vision: string;
@@ -15,6 +17,8 @@ export interface Company {
   rating: number;
   jobPositions: string[]; // Array of Job IDs related to this company
 }
+type CompanyWithStringId = Omit<Company, '_id'> & { _id: string };
+
 function generateSlug(name: string) {
     return name
       .toLowerCase()
@@ -56,4 +60,20 @@ export async function listCompanies(): Promise<Company[]> {
   }));
 
   return serializedCompanies;
+}
+
+export async function getCompanyById(id: string): Promise<CompanyWithStringId | null> {
+  const client = await clientPromise;
+  const db = client.db();
+  const collection = db.collection<Company>('companies');
+
+  const company = await collection.findOne({ _id: new ObjectId(id) })
+
+  if (!company) return null;
+
+  return {
+    ...company,
+    _id: company._id.toString(), // Convert ObjectId to string
+  };
+
 }
