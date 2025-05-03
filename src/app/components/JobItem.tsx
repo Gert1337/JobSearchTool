@@ -26,9 +26,13 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   return (
     <div className="p4">
       <h3>
-        {title} at <Link href={`/companies/${company}`} className="text-blue-500 underline">
-					{company}
-				</Link>
+        {title} at{" "}
+        <Link
+          href={`/companies/${company.toLocaleLowerCase()}`}
+          className="text-blue-500 underline"
+        >
+          {company}
+        </Link>
       </h3>
       <p>Status: {status}</p>
       <p>Date applied: {formattedDate ? formattedDate : "No date"}</p>
