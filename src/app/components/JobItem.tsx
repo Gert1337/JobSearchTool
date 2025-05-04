@@ -1,6 +1,10 @@
 "use client";
 import { Job } from "@/components/types";
 import Link from "next/link";
+import Modal from "./Modal";
+import AddNoteForm from "./AddNoteForm";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface JobItemProps {
   job: Job;
@@ -10,6 +14,9 @@ interface JobItemProps {
 
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id, dateApplied, notes } = job;
+  const [showNewNoteModal, setShowNewNoteModal] = useState(false);
+
+  const router = useRouter()
 
   if (!_id) {
     return null;
@@ -25,6 +32,18 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
 
   return (
     <div className="p4">
+      <Modal
+        isOpen={showNewNoteModal}
+        onClose={() => setShowNewNoteModal(false)}
+      >
+        <AddNoteForm
+          jobId={idString}
+          onNoteAdded={() => {
+            setShowNewNoteModal(false);
+            router.push("/")
+          }}
+        />
+      </Modal>
       <h3>
         {title} at{" "}
         <Link
@@ -49,7 +68,10 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
         >
           Delete
         </button>
-        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
+        <button
+          onClick={() => setShowNewNoteModal(true)}
+          className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
+        >
           Add note
         </button>
       </div>

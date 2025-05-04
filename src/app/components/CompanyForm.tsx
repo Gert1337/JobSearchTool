@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Company } from "./types";
+import { useRouter } from "next/navigation";
 
 interface CompanyFormProps {
-  addCompany: (company: Company) => void;
+
+  onClose: ()=> void; 
 }
 
-export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
+export const CompanyForm = ({ onClose }: CompanyFormProps) => {
   const [formData, setFormData] = useState<Company>({
     name: "",
     mission: "",
@@ -20,6 +22,7 @@ export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
     rating: 0,
     jobPositions: [],
   });
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -64,7 +67,9 @@ export const CompanyForm = ({ addCompany }: CompanyFormProps) => {
       body: JSON.stringify(formData),
     });
     const data = await res.json();
-    addCompany(data);
+    console.log("submittet:",data)
+    onClose()
+    router.push("/")
     // Reset form
     setFormData({
       name: "",
