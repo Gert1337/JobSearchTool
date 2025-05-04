@@ -3,7 +3,11 @@ import JobForm from '@/components/JobForm'
 import { useEffect, useState } from "react";
 import { Job, Company } from "@/components/types";
 
-export default function AddJobFormWrapper() {
+type Props = {
+  onClose: () => void;
+  
+};
+export default function AddJobFormWrapper({onClose}:Props) {
       const [companies, setCompanies] = useState<Company[]>([]); // Fetch companies here
 
       useEffect(() => {
@@ -25,7 +29,7 @@ export default function AddJobFormWrapper() {
 
   return (
     <div>
-      <JobForm addJob={addJob} companies={companies}/>
+      <JobForm addJob={addJob} onClose={onClose} companies={companies}/>
     </div>
   )
 }

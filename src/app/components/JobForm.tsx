@@ -2,9 +2,12 @@
 import { useState } from "react";
 import { Job, Note, Company } from "@/components/types";
 
+import { useRouter } from "next/navigation";
+
 interface JobFormProps {
   addJob: (job: Job) => void;
   companies: Company[];
+  onClose: () => void;
 }
 
 const moodEmojis = [
@@ -16,7 +19,7 @@ const moodEmojis = [
   { label: "Surprised", emoji: "😲" },
 ];
 
-const JobForm = ({ addJob, companies }: JobFormProps) => {
+const JobForm = ({ addJob, companies, onClose }: JobFormProps) => {
   const [jobTitle, setJobTitle] = useState<string>("");
   const [companyId, setCompanyId] = useState<string>("");
   const [status, setStatus] = useState<
@@ -31,6 +34,7 @@ const JobForm = ({ addJob, companies }: JobFormProps) => {
       note: "",
     },
   ]); // Initialize with one empty note
+  const router = useRouter();
 
   const handleNoteChange = (index: number, key: keyof Note, value: string) => {
     const updatedNotes = [...notes];
@@ -92,6 +96,8 @@ const JobForm = ({ addJob, companies }: JobFormProps) => {
             note: "",
           },
         ]);
+        router.push("/");
+        onClose();
       } else {
         console.error("Error saving job:", response.statusText);
       }

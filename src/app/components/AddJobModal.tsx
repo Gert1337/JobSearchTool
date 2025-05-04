@@ -22,7 +22,7 @@ export default function AddJobModal({ isOpen, onClose }: Props) {
           >
             ×
           </button>
-          <AddJobFormWrapper />
+          <AddJobFormWrapper onClose={onClose} />
         </div>
       </div>
     </div>
