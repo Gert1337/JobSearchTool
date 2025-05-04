@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Job, Company } from "@/components/types";
 
 type Props = {
-  onClose: () => void;
+  onClose?: () => void;
   
 };
 export default function AddJobFormWrapper({onClose}:Props) {
@@ -27,6 +27,7 @@ export default function AddJobFormWrapper({onClose}:Props) {
       console.log(newJob)
       };
 
+      if(!onClose) return  
   return (
     <div>
       <JobForm addJob={addJob} onClose={onClose} companies={companies}/>
