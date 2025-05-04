@@ -36,8 +36,23 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
       </h3>
       <p>Status: {status}</p>
       <p>Date applied: {formattedDate ? formattedDate : "No date"}</p>
-      <button onClick={() => updateJob(idString)}>Update Status</button>
-      <button onClick={() => deleteJob(idString)}>Delete</button>
+      <div className="flex gap-2">
+        <button
+          onClick={() => updateJob(idString)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Update Status
+        </button>
+        <button
+          onClick={() => deleteJob(idString)}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+        >
+          Delete
+        </button>
+        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
+          Add note
+        </button>
+      </div>
 
       {/* Render Notes if they exist */}
       {notes && notes.length > 0 && (
