@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import JobList from "@/components/JobList";
 import { Job, Company } from "@/components/types";
-import AddJobModal from "./components/AddJobModal";
+import Modal from "./components/Modal";
+import AddJobFormWrapper from "./components/AddJobFormWrapper";
+import CompanyForm from "./components/CompanyForm";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]); // Fetch companies here
-  const [showModal, setShowModal] = useState(false);
+  const [showNewJobModal, setShowNewJobModal] = useState(false);
+  const [showNewCompanyModal, setShowNewCompanyModal] = useState(false);
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -96,10 +99,16 @@ export default function Home() {
           <h1>Job Search Tool</h1>
           <div className="inline-flex">
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => setShowNewJobModal(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded"
             >
               Add job
+            </button>
+            <button
+              onClick={() => setShowNewCompanyModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              Add Company
             </button>
           </div>
           <JobList
@@ -107,7 +116,18 @@ export default function Home() {
             updateJob={updateJob}
             deleteJob={deleteJob}
           />
-          <AddJobModal isOpen={showModal} onClose={() => setShowModal(false)} />
+          <Modal
+            isOpen={showNewCompanyModal}
+            onClose={() => setShowNewCompanyModal(false)}
+          >
+            <CompanyForm onClose={() => setShowNewCompanyModal(false)}/>
+          </Modal>
+          <Modal
+            isOpen={showNewJobModal}
+            onClose={() => setShowNewJobModal(false)}
+          >
+            <AddJobFormWrapper onClose={() => setShowNewJobModal(false)} />
+          </Modal>
         </div>
       </main>
     </div>
