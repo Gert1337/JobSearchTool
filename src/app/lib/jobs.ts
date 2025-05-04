@@ -78,3 +78,34 @@ export async function addNoteToJob(jobId: string, note: Note) {
 
 	return true;
 }
+
+export async function deleteDistinctNoteFromJob(jobId: string, noteIndex: number) {
+	const client = await clientPromise;
+	const db = client.db();
+	const collection = db.collection<Job>("jobs");
+
+	if (!ObjectId.isValid(jobId)) {
+		throw new Error("Invalid job ID");
+	}
+
+	const jobObjectId = new ObjectId(jobId);
+
+	// Step 1: Unset (nullify) the note at the index
+	await collection.updateOne(
+		{ _id: jobObjectId },
+		{ $unset: { [`notes.${noteIndex}`]: 1 } }
+	);
+
+	// Step 2: Pull (remove) all nulls from the array
+	const result = await collection.updateOne(
+		{ _id: jobObjectId },
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		{ $pull: { notes: null as any } }
+	);
+
+	if (result.modifiedCount === 0) {
+		throw new Error("Failed to delete the note");
+	}
+
+	return { success: true };
+}
