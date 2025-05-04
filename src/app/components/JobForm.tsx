@@ -103,7 +103,7 @@ const JobForm = ({ addJob, companies }: JobFormProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-6 bg-white p-6 rounded-md "
+      className="flex flex-col gap-3 p-6 rounded-md "
     >
       <div className="flex flex-col">
         <label htmlFor="jobTitle" className="text-sm font-medium mb-2">
