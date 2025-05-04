@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import clientPromise from './mongodb';
 
-import {Job} from '@/components/types'
+import {Job, Note} from '@/components/types'
 
 
 // Create a new job
@@ -53,6 +53,27 @@ export async function deleteJob(id: string) {
 
 	if (result.deletedCount === 0) {
 		throw new Error("Job not found");
+	}
+
+	return true;
+}
+
+export async function addNoteToJob(jobId: string, note: Note) {
+	const client = await clientPromise;
+	const db = client.db();
+	const collection = db.collection<Job>('jobs');
+
+	if (!ObjectId.isValid(jobId)) {
+		throw new Error('Invalid job ID');
+	}
+
+	const result = await collection.updateOne(
+		{ _id: new ObjectId(jobId) },
+		{ $push: { notes: note } }
+	);
+
+	if (result.modifiedCount === 0) {
+		throw new Error('Failed to add note');
 	}
 
 	return true;
