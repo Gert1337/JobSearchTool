@@ -16,7 +16,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id, dateApplied, notes } = job;
   const [showNewNoteModal, setShowNewNoteModal] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   if (!_id) {
     return null;
@@ -40,7 +40,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
           jobId={idString}
           onNoteAdded={() => {
             setShowNewNoteModal(false);
-            router.push("/")
+            router.push("/");
           }}
         />
       </Modal>
@@ -78,17 +78,22 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
 
       {/* Render Notes if they exist */}
       {notes && notes.length > 0 && (
-        <div>
-          <h4>Notes:</h4>
-          {notes.map((note, index) => (
-            <div key={index} className="note p-4">
-              <h5>{note.title}</h5>
-              <p>Mood: {note.mood || "No mood specified"}</p>
-              <p>Date: {note.date}</p>
-              <h6>The Note:</h6>
-              <p>{note.note}</p>
-            </div>
-          ))}
+        <div className="mt-4">
+          <h4 className="text-lg font-semibold mb-2">Notes:</h4>
+          <div className="flex flex-wrap gap-4">
+            {notes.map((note, index) => (
+              <div
+                key={index}
+                className="w-48 min-h-48 bg-yellow-200 p-4 rounded-md shadow-lg relative transform rotate-[-2deg] hover:rotate-0 transition-transform duration-200"
+              >
+                <h5 className="font-bold text-sm">{note.title}</h5>
+                <p className="text-xs">Mood: {note.mood || "No mood"}</p>
+                <p className="text-xs">Date: {note.date}</p>
+                <h6 className="font-semibold mt-2 text-sm">Note:</h6>
+                <p className="text-sm">{note.note}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
