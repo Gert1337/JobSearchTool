@@ -15,14 +15,35 @@ interface JobItemProps {
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id, dateApplied, notes } = job;
   const [showNewNoteModal, setShowNewNoteModal] = useState(false);
-
   const router = useRouter();
-
   if (!_id) {
     return null;
   }
-
   const idString = typeof _id === "string" ? _id : _id.toString();
+
+  const handleEditNote = (index: number) => {
+    if (!notes) return;
+    // Du kan åbne en modal med note[index] info eller inline redigering
+    console.log("Edit note:", notes[index]);
+  };
+
+  const handleDeleteNote = async (index: number) => {
+    try {
+      const response = await fetch(`/api/jobs/${idString}/note/${index}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        console.log("Note deleted");
+        router.push("/")
+        router.refresh(); // This revalidates and fetches fresh server data
+      } else {
+        console.error("Failed to delete note:", response.statusText);
+      }
+    } catch (err) {
+      console.error("Error deleting note:", err);
+    }
+  };
 
   console.log("Job in JobItem:", job);
   const formattedDate =
@@ -40,7 +61,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
           jobId={idString}
           onNoteAdded={() => {
             setShowNewNoteModal(false);
-            router.push("/");
+            router.refresh();
           }}
         />
       </Modal>
@@ -84,13 +105,42 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
             {notes.map((note, index) => (
               <div
                 key={index}
-                className="w-48 min-h-48 bg-yellow-200 p-4 rounded-md shadow-lg relative transform rotate-[-2deg] hover:rotate-0 transition-transform duration-200"
+                className={`relative w-48 min-h-48 bg-yellow-200 p-4 pt-6 rounded-md shadow-md transform transition-transform duration-200 ${
+                  index % 3 === 0
+                    ? "rotate-[-2deg]"
+                    : index % 3 === 1
+                    ? "rotate-[1deg]"
+                    : "rotate-[3deg]"
+                } hover:rotate-0`}
               >
+                {/* Pin (emoji or styled circle) */}
+                <div className="absolute top-1 left-1 text-xl pointer-events-none">
+                  📌
+                </div>
+
                 <h5 className="font-bold text-sm">{note.title}</h5>
                 <p className="text-xs">Mood: {note.mood || "No mood"}</p>
                 <p className="text-xs">Date: {note.date}</p>
                 <h6 className="font-semibold mt-2 text-sm">Note:</h6>
-                <p className="text-sm">{note.note}</p>
+                <p className="text-sm mb-4 whitespace-pre-wrap break-words">
+                  {note.note}
+                </p>
+
+                {/* Buttons */}
+                <div className="absolute bottom-2 right-2 flex gap-2">
+                  <button
+                    className="text-blue-600 text-xs hover:underline"
+                    onClick={() => handleEditNote(index)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="text-red-600 text-xs hover:underline"
+                    onClick={() => handleDeleteNote(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
