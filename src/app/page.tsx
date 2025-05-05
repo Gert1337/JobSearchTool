@@ -1,25 +1,34 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import JobList from "@/components/JobList";
-import { Job, Company } from "@/components/types";
+import { useAtom } from "jotai";
+import { Job } from "@/components/types";
 import Modal from "./components/Modal";
 import AddJobFormWrapper from "./components/AddJobFormWrapper";
 import CompanyForm from "./components/CompanyForm";
+import {
+  jobsAtom,
+  companiesAtom,
+  showNewJobModalAtom,
+  showNewCompanyModalAtom,
+} from "@/(atoms)/atoms";
 
 export default function Home() {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [companies, setCompanies] = useState<Company[]>([]); // Fetch companies here
-  const [showNewJobModal, setShowNewJobModal] = useState(false);
-  const [showNewCompanyModal, setShowNewCompanyModal] = useState(false);
+  const [, setJobs] = useAtom(jobsAtom);
+  const [, setCompanies] = useAtom(companiesAtom);
+  const [showNewJobModal, setShowNewJobModal] = useAtom(showNewJobModalAtom);
+  const [showNewCompanyModal, setShowNewCompanyModal] = useAtom(
+    showNewCompanyModalAtom
+  );
   useEffect(() => {
-    async function fetchJobs() {
+    async function fetchData() {
       try {
-        const response = await fetch("/api/jobs"); // Your API endpoint
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Fetched jobs:", data);
-          // Ensure that the 'status' is one of the valid options.
-          const validJobs: Job[] = data.map((job: Job) => ({
+        // Fetch Jobs
+        const jobsResponse = await fetch("/api/jobs");
+        if (jobsResponse.ok) {
+          const jobsData = await jobsResponse.json();
+          // Ensure that the 'status' is one of the valid options
+          const validJobs: Job[] = jobsData.map((job: Job) => ({
             ...job,
             status: job.status as
               | "applied"
@@ -27,70 +36,35 @@ export default function Home() {
               | "offer"
               | "rejected",
           }));
-          setJobs(validJobs); // Set jobs from database
+
+          // Fetch Companies
+          const companiesResponse = await fetch("/api/companies");
+          const companiesData = await companiesResponse.json();
+
+          // Map jobs with company names
+          const jobsWithCompanyName = validJobs.map((job) => {
+            const company = companiesData.find(
+              (c: { _id: { toString: () => string; }; }) => c._id?.toString() === job.company?.toString()
+            );
+            return {
+              ...job,
+              company: company ? company.name : "Unknown company",
+            };
+          });
+
+          // Update state
+          setCompanies(companiesData);
+          setJobs(jobsWithCompanyName); // Set jobs with company names
         } else {
-          console.error("Failed to fetch jobs:", response.statusText);
+          console.error("Failed to fetch jobs:", jobsResponse.statusText);
         }
       } catch (error) {
-        console.error("Error fetching jobs:", error);
+        console.error("Error fetching data:", error);
       }
     }
 
-    // Fetch companies
-    async function fetchCompanies() {
-      const res = await fetch("/api/companies");
-      const data = await res.json();
-      setCompanies(data);
-    }
-
-    fetchJobs(); // Call it immediately
-    fetchCompanies();
-  }, []);
-
-  const updateJob = (id: string) => {
-    const updatedJobs = jobs.map((job) =>
-      job._id === id
-        ? {
-            ...job,
-            status: "offer" as
-              | "applied"
-              | "interviewing"
-              | "offer"
-              | "rejected",
-          }
-        : job
-    );
-    setJobs(updatedJobs);
-  };
-
-  const deleteJob = async (id: string) => {
-    try {
-      const response = await fetch("/api/jobs", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (response.ok) {
-        setJobs((prevJobs) => prevJobs.filter((job) => job._id !== id));
-        console.log("Job deleted successfully");
-      } else {
-        console.error("Failed to delete job:", await response.text());
-      }
-    } catch (error) {
-      console.error("Error deleting job:", error);
-    }
-  };
-
-  const jobsWithCompanyName = jobs.map((job) => {
-    const company = companies.find((c) => c._id === job.company);
-    return {
-      ...job,
-      company: company ? company.name : "Unknown company",
-    };
-  });
+    fetchData();
+  }, [setJobs, setCompanies]);
 
   return (
     <div className="p-4">
@@ -111,11 +85,7 @@ export default function Home() {
               Add Company
             </button>
           </div>
-          <JobList
-            jobs={jobsWithCompanyName}
-            updateJob={updateJob}
-            deleteJob={deleteJob}
-          />
+          <JobList />
           <Modal
             isOpen={showNewCompanyModal}
             onClose={() => setShowNewCompanyModal(false)}

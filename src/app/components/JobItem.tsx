@@ -5,6 +5,8 @@ import Modal from "./Modal";
 import NoteForm from "./NoteForm";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { jobsAtom } from "@/(atoms)/atoms";
 
 interface JobItemProps {
   job: Job;
@@ -14,6 +16,7 @@ interface JobItemProps {
 
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id, dateApplied, notes } = job;
+  const [, setJobs] = useAtom(jobsAtom);
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<{
     note: Note;
@@ -39,14 +42,32 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
 
       if (response.ok) {
         console.log("Note deleted");
-        router.push("/");
-        router.refresh(); // This revalidates and fetches fresh server data
+        setJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job._id?.toString() === idString
+              ? {
+                  ...job,
+                  notes: job.notes?.filter((_, i) => i !== index) || [],
+                }
+              : job
+          )
+        );
       } else {
         console.error("Failed to delete note:", response.statusText);
       }
     } catch (err) {
       console.error("Error deleting note:", err);
     }
+  };
+
+  const handleAddNote = (newNote: Note) => {
+    setJobs((prevJobs) =>
+      prevJobs.map((j) =>
+        j._id?.toString() === idString
+          ? { ...j, notes: [...(j.notes || []), newNote] }
+          : j
+      )
+    );
   };
 
   console.log("Job in JobItem:", job);
@@ -69,10 +90,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
           jobId={idString}
           initialNote={noteToEdit?.note}
           noteIndex={noteToEdit?.index}
-          onNoteAdded={() => {
-            setShowNoteModal(false);
-            router.refresh();
-          }}
+          onNoteAdded={handleAddNote}
           onSuccess={() => {
             setShowNoteModal(false);
             setNoteToEdit(null);
@@ -97,7 +115,11 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
         {" "}
         Status: <span className="font-medium">{status}</span>
       </p>
-      <p> Date applied: <span className="font-medium">{formattedDate || "No date"}</span></p>
+      <p>
+        {" "}
+        Date applied:{" "}
+        <span className="font-medium">{formattedDate || "No date"}</span>
+      </p>
 
       <div className="flex gap-3">
         <button

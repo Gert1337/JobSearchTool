@@ -6,7 +6,7 @@ interface NoteFormProps {
   jobId: string;
   initialNote?: Note;
   noteIndex?: number; // If present, it's an edit
-  onNoteAdded?: () => void;
+  onNoteAdded: (newNote: Note) => void;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -76,7 +76,7 @@ export default function NoteForm({
           note: "",
         });
       }
-      onNoteAdded?.();
+      onNoteAdded?.(note);
       onSuccess?.();
     } catch (err) {
       console.error(err);
