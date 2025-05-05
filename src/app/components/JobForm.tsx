@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import {  Note, Company } from "@/components/types";
+import { Note, Company } from "@/components/types";
 
 import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
@@ -86,9 +86,14 @@ const JobForm = ({ companies, onClose }: JobFormProps) => {
       console.log("Response data:", responseData);
 
       if (response.ok) {
-        // Update jobs atom directly
+        const company = companies.find((c) => c._id === responseData.company);
+        const enrichedJob = {
+          ...responseData,
+          company: company ? company.name : "Unknown company",
+        };
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setJobs((prevJobs: any) => [...prevJobs, responseData]);
+        setJobs((prevJobs: any) => [...prevJobs, enrichedJob]);
 
         // Clear form
         setJobTitle("");
@@ -103,7 +108,7 @@ const JobForm = ({ companies, onClose }: JobFormProps) => {
           },
         ]);
         onClose();
-        router.push("/")
+        router.push("/");
       } else {
         console.error("Error saving job:", response.statusText);
       }
