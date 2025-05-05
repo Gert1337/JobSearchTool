@@ -7,6 +7,12 @@ import { useAtom } from "jotai";
 const JobList = () => {
   const [jobs, setJobs] = useAtom(jobsAtom); // Access the jobs state
 
+  const sortedJobs = [...jobs].sort((a, b) => {
+    const dateA = new Date(a.dateApplied).getTime();
+    const dateB = new Date(b.dateApplied).getTime();
+    return dateB - dateA;
+  });
+
   const updateJob = (id: string) => {
     const updatedJobs = jobs.map((job) =>
       job._id === id
@@ -47,7 +53,7 @@ const JobList = () => {
             <p>No jobs found.</p>
           </div>
         ) : (
-          jobs.map((job) => (
+          sortedJobs.map((job) => (
             <li key={job._id?.toString() || ''}>
               <JobItem
                 job={job}
