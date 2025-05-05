@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
-import { Job, Note, Company } from "@/components/types";
+import {  Note, Company } from "@/components/types";
 
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { jobsAtom } from "@/(atoms)/atoms";
 
 interface JobFormProps {
-  addJob: (job: Job) => void;
   companies: Company[];
   onClose: () => void;
 }
@@ -19,8 +20,9 @@ const moodEmojis = [
   { label: "Surprised", emoji: "😲" },
 ];
 
-const JobForm = ({ addJob, companies, onClose }: JobFormProps) => {
+const JobForm = ({ companies, onClose }: JobFormProps) => {
   const [jobTitle, setJobTitle] = useState<string>("");
+  const [, setJobs] = useAtom(jobsAtom);
   const [companyId, setCompanyId] = useState<string>("");
   const [status, setStatus] = useState<
     "applied" | "interviewing" | "offer" | "rejected"
@@ -84,7 +86,11 @@ const JobForm = ({ addJob, companies, onClose }: JobFormProps) => {
       console.log("Response data:", responseData);
 
       if (response.ok) {
-        addJob(responseData);
+        // Update jobs atom directly
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setJobs((prevJobs: any) => [...prevJobs, responseData]);
+
+        // Clear form
         setJobTitle("");
         setCompanyId("");
         setStatus("applied");
@@ -96,8 +102,8 @@ const JobForm = ({ addJob, companies, onClose }: JobFormProps) => {
             note: "",
           },
         ]);
-        router.push("/");
         onClose();
+        router.push("/")
       } else {
         console.error("Error saving job:", response.statusText);
       }
