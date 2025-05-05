@@ -70,7 +70,8 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
     );
   };
 
-  console.log("Job in JobItem:", job);
+  
+  
   const formattedDate =
     dateApplied instanceof Date
       ? dateApplied.toLocaleDateString()
