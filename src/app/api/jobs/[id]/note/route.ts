@@ -2,7 +2,8 @@ import { addNoteToJob } from "@/lib/jobs";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-	const jobId = params.id;
+	const { id } = await params; 
+	const jobId = id; 
 	const note = await req.json();
 
 	try {
