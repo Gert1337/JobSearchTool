@@ -109,3 +109,24 @@ export async function deleteDistinctNoteFromJob(jobId: string, noteIndex: number
 
 	return { success: true };
 }
+
+export async function editNoteOnJob(jobId: string, noteIndex: number, updatedNote: Note) {
+	const client = await clientPromise;
+	const db = client.db();
+	const collection = db.collection<Job>("jobs");
+
+	if (!ObjectId.isValid(jobId)) {
+		throw new Error("Invalid job ID");
+	}
+
+	const result = await collection.updateOne(
+		{ _id: new ObjectId(jobId) },
+		{ $set: { [`notes.${noteIndex}`]: updatedNote } }
+	);
+
+	if (result.modifiedCount === 0) {
+		throw new Error("Failed to update the note");
+	}
+
+	return { success: true };
+}

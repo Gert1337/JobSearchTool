@@ -1,8 +1,8 @@
 "use client";
-import { Job } from "@/components/types";
+import { Job, Note } from "@/components/types";
 import Link from "next/link";
 import Modal from "./Modal";
-import AddNoteForm from "./AddNoteForm";
+import NoteForm from "./NoteForm";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +14,8 @@ interface JobItemProps {
 
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id, dateApplied, notes } = job;
-  const [showNewNoteModal, setShowNewNoteModal] = useState(false);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<{ note: Note; index: number } | null>(null);
   const router = useRouter();
   if (!_id) {
     return null;
@@ -23,8 +24,8 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
 
   const handleEditNote = (index: number) => {
     if (!notes) return;
-    // Du kan åbne en modal med note[index] info eller inline redigering
-    console.log("Edit note:", notes[index]);
+    setNoteToEdit({ note: notes[index], index });
+		setShowNoteModal(true);
   };
 
   const handleDeleteNote = async (index: number) => {
@@ -54,15 +55,27 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   return (
     <div className="p4">
       <Modal
-        isOpen={showNewNoteModal}
-        onClose={() => setShowNewNoteModal(false)}
+        isOpen={showNoteModal}
+        onClose={() => {setShowNoteModal(false);setNoteToEdit(null);}}
+        title={noteToEdit ? "Edit Note" : "Add Note"}
       >
-        <AddNoteForm
+        <NoteForm
           jobId={idString}
+          initialNote={noteToEdit?.note}
+          noteIndex={noteToEdit?.index}
           onNoteAdded={() => {
-            setShowNewNoteModal(false);
+            setShowNoteModal(false);
             router.refresh();
           }}
+          onSuccess={() => {
+						setShowNoteModal(false);
+						setNoteToEdit(null);
+						router.refresh();
+					}}
+					onCancel={() => {
+						setShowNoteModal(false);
+						setNoteToEdit(null);
+					}}
         />
       </Modal>
       <h3>
@@ -90,7 +103,10 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
           Delete
         </button>
         <button
-          onClick={() => setShowNewNoteModal(true)}
+          onClick={() => {
+						setNoteToEdit(null);
+						setShowNoteModal(true);
+					}}
           className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
         >
           Add note
