@@ -119,12 +119,14 @@ export default function Home() {
           <Modal
             isOpen={showNewCompanyModal}
             onClose={() => setShowNewCompanyModal(false)}
+            title="Add new company"
           >
-            <CompanyForm onClose={() => setShowNewCompanyModal(false)}/>
+            <CompanyForm onClose={() => setShowNewCompanyModal(false)} />
           </Modal>
           <Modal
             isOpen={showNewJobModal}
             onClose={() => setShowNewJobModal(false)}
+            title="Add new job"
           >
             <AddJobFormWrapper onClose={() => setShowNewJobModal(false)} />
           </Modal>
