@@ -15,7 +15,10 @@ interface JobItemProps {
 const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const { title, company, status, _id, dateApplied, notes } = job;
   const [showNoteModal, setShowNoteModal] = useState(false);
-  const [noteToEdit, setNoteToEdit] = useState<{ note: Note; index: number } | null>(null);
+  const [noteToEdit, setNoteToEdit] = useState<{
+    note: Note;
+    index: number;
+  } | null>(null);
   const router = useRouter();
   if (!_id) {
     return null;
@@ -25,7 +28,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
   const handleEditNote = (index: number) => {
     if (!notes) return;
     setNoteToEdit({ note: notes[index], index });
-		setShowNoteModal(true);
+    setShowNoteModal(true);
   };
 
   const handleDeleteNote = async (index: number) => {
@@ -36,7 +39,7 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
 
       if (response.ok) {
         console.log("Note deleted");
-        router.push("/")
+        router.push("/");
         router.refresh(); // This revalidates and fetches fresh server data
       } else {
         console.error("Failed to delete note:", response.statusText);
@@ -53,10 +56,13 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
       : dateApplied;
 
   return (
-    <div className="p4">
+    <div className="p-6 bg-white border rounded shadow-sm">
       <Modal
         isOpen={showNoteModal}
-        onClose={() => {setShowNoteModal(false);setNoteToEdit(null);}}
+        onClose={() => {
+          setShowNoteModal(false);
+          setNoteToEdit(null);
+        }}
         title={noteToEdit ? "Edit Note" : "Add Note"}
       >
         <NoteForm
@@ -68,46 +74,50 @@ const JobItem = ({ job, updateJob, deleteJob }: JobItemProps) => {
             router.refresh();
           }}
           onSuccess={() => {
-						setShowNoteModal(false);
-						setNoteToEdit(null);
-						router.refresh();
-					}}
-					onCancel={() => {
-						setShowNoteModal(false);
-						setNoteToEdit(null);
-					}}
+            setShowNoteModal(false);
+            setNoteToEdit(null);
+            router.refresh();
+          }}
+          onCancel={() => {
+            setShowNoteModal(false);
+            setNoteToEdit(null);
+          }}
         />
       </Modal>
-      <h3>
+      <h3 className="text-xl font-semibold text-gray-900 mt-4">
         {title} at{" "}
         <Link
           href={`/companies/${company.toLocaleLowerCase()}`}
-          className="text-blue-500 underline"
+          className="text-blue-600 hover:underline"
         >
           {company}
         </Link>
       </h3>
-      <p>Status: {status}</p>
-      <p>Date applied: {formattedDate ? formattedDate : "No date"}</p>
-      <div className="flex gap-2">
+      <p className="text-sm text-gray-600">
+        {" "}
+        Status: <span className="font-medium">{status}</span>
+      </p>
+      <p> Date applied: <span className="font-medium">{formattedDate || "No date"}</span></p>
+
+      <div className="flex gap-3">
         <button
           onClick={() => updateJob(idString)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:shadow-md transition-transform duration-150 hover:scale-[1.02]"
         >
           Update Status
         </button>
         <button
           onClick={() => deleteJob(idString)}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 hover:shadow-md transition-transform duration-150 hover:scale-[1.02]"
         >
           Delete
         </button>
         <button
           onClick={() => {
-						setNoteToEdit(null);
-						setShowNoteModal(true);
-					}}
-          className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
+            setNoteToEdit(null);
+            setShowNoteModal(true);
+          }}
+          className="bg-gray-100 text-gray-800 px-4 py-2 rounded border hover:bg-gray-200 hover:shadow-md transition-transform duration-150 hover:scale-[1.02]"
         >
           Add note
         </button>
